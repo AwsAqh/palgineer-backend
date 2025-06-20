@@ -1,0 +1,6 @@
+@palgineer_HostAddress = http://localhost:5122
+
+GET {{palgineer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
