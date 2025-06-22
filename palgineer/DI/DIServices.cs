@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 
 
 namespace palgineer.DI
@@ -54,6 +55,7 @@ namespace palgineer.DI
                     ClockSkew = TimeSpan.Zero
                 };
             });
+            
 
         }
 

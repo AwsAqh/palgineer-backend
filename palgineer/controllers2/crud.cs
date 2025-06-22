@@ -58,20 +58,28 @@ namespace palgineer.controllers2
             if (existing == null)
                 return NotFound();
 
-            existing.name = updatedEngineer.name;
-            existing.email = updatedEngineer.email;
-            existing.status= updatedEngineer.status;
-            existing.experience= updatedEngineer.experience;
-            existing.summary = updatedEngineer.summary;
-            existing.skills = updatedEngineer.skills;
-            existing.links = updatedEngineer.links;
+            existing.name = updatedEngineer.name ??existing.name;
+            existing.email = updatedEngineer.email?? existing.email;
+            existing.status= updatedEngineer.status ?? existing.status;
+            existing.experience= updatedEngineer.experience ?? existing.experience;
+            existing.summary = updatedEngineer.summary ?? existing.summary ;
+            existing.skills = updatedEngineer.skills ?? existing.skills;
+            existing.role=updatedEngineer.role??existing.role;
+            existing.links = updatedEngineer.links ?? existing.links;
             if(updatedEngineer.avatar?.Length>0)
-            existing.avatar= await _fileServices.saveFileAsync(updatedEngineer.avatar);
+            existing.avatar= await _fileServices.saveFileAsync( id,updatedEngineer.avatar);
             if(updatedEngineer.resume?.Length>0)
-            existing.resume = await _fileServices.saveFileAsync(updatedEngineer.resume);
+            existing.resume = await _fileServices.saveFileAsync(id,updatedEngineer.resume);
 
             await _engineerService.UpdateEngineerAsync(existing, id);
-            return NoContent();
+            var updated = await _engineerService.GetByIdAsync(id);
+            return Ok(new
+            {
+                message="Engineer updated successfully",
+                updated,
+            }
+                
+                );
         }
 
 

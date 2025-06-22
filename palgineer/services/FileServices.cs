@@ -1,27 +1,36 @@
-﻿namespace palgineer.services
+﻿using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+public class FileServices
 {
-    public class FileServices
+    private const string UploadsFolderName = "uploads";
+
+    public async Task<string?> saveFileAsync(string userId, IFormFile file)
     {
-        private readonly string _path="/uploads";
+        if (file == null || file.Length == 0)
+            return null;
 
-        public async Task<string> saveFileAsync(IFormFile file) { 
+        // Base uploads folder
+        var appRoot = Directory.GetCurrentDirectory();
+        var uploadsRoot = Path.Combine(appRoot, UploadsFolderName);
+
+         // Per-user folder
+        var userFolder = Path.Combine(uploadsRoot, userId);
+        if (!Directory.Exists(userFolder))
+            Directory.CreateDirectory(userFolder);
+
         
-        if(file==null || file.Length==0) return null ;
+        var fileName = Path.GetFileName(file.FileName);
+        var physicalPath = Path.Combine(userFolder, fileName);
 
-        var fileName=Guid.NewGuid() +Path.GetExtension(file.FileName);
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), _path);
-
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-
-            var path = Path.Combine(directory, fileName);
-
-            using (var stream = new FileStream(path, FileMode.Create)) { 
-            
-                await file.CopyToAsync(stream);
-            
-            }
-            return Path.Combine(_path, fileName).Replace("\\", "/");
+       
+        await using (var stream = new FileStream(physicalPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
         }
 
+        
+        return $"/{UploadsFolderName}/{userId}/{fileName}";
     }
 }

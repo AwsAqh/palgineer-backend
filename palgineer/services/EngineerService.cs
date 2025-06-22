@@ -35,12 +35,13 @@ public class EngineerService
     public async Task AddEngineerAsync(Engineer newEngineer) 
     {
        await _engineers.InsertOneAsync(newEngineer);
-
+        
     }
 
     public async Task UpdateEngineerAsync(Engineer editedEngineer, string id)
     {
-        await _engineers.ReplaceOneAsync(engineer => engineer.Id == id, editedEngineer);
+        var update = Builders<Engineer>.Update.Set(e => e.name, editedEngineer.name).Set(e => e.email, editedEngineer.email).Set(e=>e.avatar, editedEngineer.avatar).Set(e=>e.skills, editedEngineer.skills).Set(e => e.status, editedEngineer.status).Set(e => e.resume,editedEngineer.resume).Set(e=>e.summary,editedEngineer.summary).Set(e=>e.experience,editedEngineer.experience).Set(e=>e.links,editedEngineer.links);
+       await _engineers.UpdateOneAsync(engineer => engineer.Id==id ,update);
     }
 
 

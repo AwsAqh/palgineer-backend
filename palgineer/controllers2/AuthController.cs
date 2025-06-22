@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text;
+using MongoDB.Bson;
 
 namespace palgineer.controllers2
 {
@@ -49,36 +50,31 @@ namespace palgineer.controllers2
 
             string avatarFileName = null;
             string resumeFileName = null;
-            if (dto.avatar != null && dto.avatar.Length > 0)
-            {
-                avatarFileName = await _fileServices.saveFileAsync(dto.avatar);
-            }
-
-
-            if (dto.resume != null && dto.resume.Length > 0)
-            {
-                resumeFileName = await _fileServices.saveFileAsync(dto.resume);
-            }
-
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.password);
-
             var newEngineer = new Engineer
             {
-
+                Id = ObjectId.GenerateNewId().ToString(),
                 name = dto.name,
                 email = dto.email,
-                passwordHash = hashedPassword,
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.password),
                 summary = dto.summary,
                 skills = dto.skills,
                 links = dto.links,
-                resume = resumeFileName,
-                avatar = avatarFileName,
-
+                role=dto.role,
+                status=dto.status,
+                experience=dto.experience,
+               
             };
+
+            
+            if (dto.avatar?.Length > 0)
+                newEngineer.avatar = await _fileServices.saveFileAsync(newEngineer.Id, dto.avatar);
+
+            if (dto.resume?.Length > 0)
+                newEngineer.resume = await _fileServices.saveFileAsync(newEngineer.Id, dto.resume);
 
             await _engineerService.AddEngineerAsync(newEngineer);
 
-            
+
             var claims = new[]
             {
         new Claim(JwtRegisteredClaimNames.Sub, newEngineer.Id!),
@@ -86,7 +82,7 @@ namespace palgineer.controllers2
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
 
-            // 5) sign & issue token
+            
             var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
             var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddDays(_jwtSettings.DurationInDays);
@@ -152,7 +148,7 @@ namespace palgineer.controllers2
             var token = handler.CreateToken(tokenDesc);
             var jwt = handler.WriteToken(token);
 
-            // 5) return token + user
+            
             return Ok(new AuthResponseDTO
             {
                 Token = jwt,

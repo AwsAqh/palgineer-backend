@@ -21,6 +21,8 @@ using MongoDB.Bson.Serialization.Attributes;
     public string? experience { get; set; }
     
         public string? summary {  get; set; }
+
+    public string? role { get; set; }
     public string[]? skills { get; set; }
         public Dictionary<string,string>? links { get; set; }
         public string? avatar { get; set; }
