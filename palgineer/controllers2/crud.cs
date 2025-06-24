@@ -32,7 +32,15 @@ namespace palgineer.controllers2
         }
 
 
+        [HttpGet("{id}")]
+       
+        public async Task<ActionResult<Engineer?>> GetEngineerById(string id)
+        {
+            var engineer = await _engineerService.GetByIdAsync(id);
+            if (engineer == null) { return NotFound("No Engineer with that ID!"); }
+            return Ok(engineer);
 
+        }
 
         [Authorize]
         [HttpPut("{id}")]

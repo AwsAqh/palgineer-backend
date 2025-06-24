@@ -52,7 +52,7 @@ namespace palgineer.controllers2
             string resumeFileName = null;
             var newEngineer = new Engineer
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                _id = ObjectId.GenerateNewId().ToString(),
                 name = dto.name,
                 email = dto.email,
                 passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.password),
@@ -67,17 +67,17 @@ namespace palgineer.controllers2
 
             
             if (dto.avatar?.Length > 0)
-                newEngineer.avatar = await _fileServices.saveFileAsync(newEngineer.Id, dto.avatar);
+                newEngineer.avatar = await _fileServices.saveFileAsync(newEngineer._id, dto.avatar);
 
             if (dto.resume?.Length > 0)
-                newEngineer.resume = await _fileServices.saveFileAsync(newEngineer.Id, dto.resume);
+                newEngineer.resume = await _fileServices.saveFileAsync(newEngineer._id, dto.resume);
 
             await _engineerService.AddEngineerAsync(newEngineer);
 
 
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, newEngineer.Id!),
+        new Claim(JwtRegisteredClaimNames.Sub, newEngineer._id!),
         new Claim(JwtRegisteredClaimNames.Email, newEngineer.email),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
@@ -126,7 +126,7 @@ namespace palgineer.controllers2
 
             var claims = new[]
                  {
-                    new Claim(JwtRegisteredClaimNames.Sub, newEngineer.Id!),
+                    new Claim(JwtRegisteredClaimNames.Sub, newEngineer._id!),
                     new Claim(JwtRegisteredClaimNames.Email, newEngineer.email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
