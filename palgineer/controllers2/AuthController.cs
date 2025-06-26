@@ -96,12 +96,24 @@ namespace palgineer.controllers2
             );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            
+            EngineerResponseDTO resEng = new EngineerResponseDTO();
+            resEng.name = newEngineer.name;
+            resEng.email = newEngineer.email;
+            resEng._id = newEngineer._id;
+            resEng.skills = newEngineer.skills;
+            resEng.links = newEngineer.links;
+            resEng.role = newEngineer.role;
+            resEng.status = newEngineer.status;
+            resEng.avatar = newEngineer.avatar;
+            resEng.resume = newEngineer.resume;
+            resEng.experience = newEngineer.experience;
+            resEng.summary = newEngineer.summary;
+
             return Ok(new AuthResponseDTO
             {
                 Token = jwt,
                 Expires = expires,
-                Engineer = newEngineer
+                Engineer = resEng
             });
 
         }
@@ -149,11 +161,24 @@ namespace palgineer.controllers2
             var jwt = handler.WriteToken(token);
 
             
+            EngineerResponseDTO resEng=new EngineerResponseDTO();
+            resEng.name=newEngineer.name;
+            resEng.email=newEngineer.email;
+            resEng._id=newEngineer._id;
+            resEng.skills=newEngineer.skills;
+            resEng.links=newEngineer.links;
+            resEng.role=newEngineer.role;
+            resEng.status=newEngineer.status;
+            resEng.avatar=newEngineer.avatar;
+            resEng.resume=newEngineer.resume;
+            resEng.experience=newEngineer.experience;
+            resEng.summary=newEngineer.summary;
+
             return Ok(new AuthResponseDTO
             {
                 Token = jwt,
                 Expires = expires,
-                Engineer = newEngineer
+                Engineer = resEng
             });
 
         }

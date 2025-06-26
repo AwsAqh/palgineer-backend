@@ -25,7 +25,7 @@ namespace palgineer.DI
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            var allowedOrigins = new[] { "http://localhost:5174" };
+            var allowedOrigins = new[] { "http://localhost:5174","http://localhost:5173" };
             services.AddCors(o => o.AddPolicy("DefaultCorsPolicy", p =>
             {
                 p.WithOrigins(allowedOrigins)
