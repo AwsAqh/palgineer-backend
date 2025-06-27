@@ -61,6 +61,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
+else
+{
+    app.UseExceptionHandler("/error");
+}
 
 
 app.Run();

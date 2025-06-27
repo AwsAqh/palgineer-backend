@@ -39,7 +39,7 @@ namespace palgineer.DI
             // build the list, include localhost unconditionally, then filter out blanks
             var allowedOrigins = new[]
             {
-    "http://localhost:5173",
+    "https://frontend2-xuc2.onrender.com",
     dev,
     staging,
     prod

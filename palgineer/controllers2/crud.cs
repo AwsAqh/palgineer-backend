@@ -72,6 +72,7 @@ namespace palgineer.controllers2
             existing.skills = dto.skills ?? existing.skills;
             existing.role = dto.role ?? existing.role;
             existing.links = dto.links ?? existing.links;
+            
 
             // if a new avatar file arrived, upload to Cloudinary under palgineer/{id}/avatars
             if (dto.avatar?.Length > 0)
@@ -87,6 +88,8 @@ namespace palgineer.controllers2
                 existing.resume =
                     await _cloudinaryService
                         .UploadDocumentAsync(dto.resume, id);
+                string resumeName = Path.GetFileName(dto.resume.FileName);
+                existing.resumeName = resumeName;
             }
 
             await _engineerService.UpdateEngineerAsync(existing, id);

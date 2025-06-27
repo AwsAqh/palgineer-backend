@@ -59,6 +59,7 @@ namespace palgineer.controllers2
                 role = dto.role,
                 status = dto.status,
                 experience = dto.experience
+                
             };
 
             // 3) If an avatar was uploaded, send it to Cloudinary and store the secure URL
@@ -73,6 +74,11 @@ namespace palgineer.controllers2
             {
                 newEngineer.resume = await _cloudinaryService
                     .UploadDocumentAsync(dto.resume, newEngineer._id);
+                // using System.IO;
+
+                string resumeName = Path.GetFileName(dto.resume.FileName);
+                newEngineer.resumeName = resumeName;
+
             }
 
             // 5) Persist the new engineer (with cloud URLs for avatar & resume)
@@ -111,7 +117,8 @@ namespace palgineer.controllers2
                 experience = newEngineer.experience,
                 summary = newEngineer.summary,
                 avatar = newEngineer.avatar,   // <-- Cloudinary URL
-                resume = newEngineer.resume    // <-- Cloudinary URL
+                resume = newEngineer.resume  ,  // <-- Cloudinary URL
+                resumeName=newEngineer.resumeName,
             };
 
             return Ok(new AuthResponseDTO
@@ -178,6 +185,7 @@ namespace palgineer.controllers2
             resEng.resume=newEngineer.resume;
             resEng.experience=newEngineer.experience;
             resEng.summary=newEngineer.summary;
+            resEng.resumeName=newEngineer.resumeName;
 
             return Ok(new AuthResponseDTO
             {

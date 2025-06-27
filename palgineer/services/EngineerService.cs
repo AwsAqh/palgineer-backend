@@ -40,7 +40,7 @@ public class EngineerService
 
     public async Task UpdateEngineerAsync(Engineer editedEngineer, string id)
     {
-        var update = Builders<Engineer>.Update.Set(e => e.name, editedEngineer.name).Set(e=>e.role,editedEngineer.role).Set(e => e.email, editedEngineer.email).Set(e=>e.avatar, editedEngineer.avatar).Set(e=>e.skills, editedEngineer.skills).Set(e => e.status, editedEngineer.status).Set(e => e.resume,editedEngineer.resume).Set(e=>e.summary,editedEngineer.summary).Set(e=>e.experience,editedEngineer.experience).Set(e=>e.links,editedEngineer.links);
+        var update = Builders<Engineer>.Update.Set(e => e.name, editedEngineer.name).Set(e=>e.resumeName,editedEngineer.resumeName).Set(e=>e.role,editedEngineer.role).Set(e => e.email, editedEngineer.email).Set(e=>e.avatar, editedEngineer.avatar).Set(e=>e.skills, editedEngineer.skills).Set(e => e.status, editedEngineer.status).Set(e => e.resume,editedEngineer.resume).Set(e=>e.summary,editedEngineer.summary).Set(e=>e.experience,editedEngineer.experience).Set(e=>e.links,editedEngineer.links);
        await _engineers.UpdateOneAsync(engineer => engineer._id ==id ,update);
     }
 

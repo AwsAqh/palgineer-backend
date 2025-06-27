@@ -27,6 +27,7 @@ using MongoDB.Bson.Serialization.Attributes;
     public Dictionary<string,string>? links { get; set; }
         public string? avatar { get; set; }
         public string? resume { get; set; }
+    public string ? resumeName { get; set; }
 
 
     

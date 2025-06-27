@@ -19,6 +19,7 @@
 
         public IFormFile? avatar { get; set; }
         public IFormFile? resume { get; set; }
+        public string? resumeName { get; set; }
     }
 
 }
