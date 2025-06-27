@@ -23,8 +23,8 @@ using MongoDB.Bson.Serialization.Attributes;
         public string? summary {  get; set; }
 
     public string? role { get; set; }
-    public string[]? skills { get; set; }
-        public Dictionary<string,string>? links { get; set; }
+    public List<string> skills { get; set; } = new List<string>();
+    public Dictionary<string,string>? links { get; set; }
         public string? avatar { get; set; }
         public string? resume { get; set; }
 

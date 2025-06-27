@@ -34,6 +34,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "MongoSettings__ConnectionString": "mongodb+srv://palgineer:palgineer@ptm.b8kliqk.mongodb.net",
+        "MongoSettings__DatabaseName": "palgineer",
+
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }

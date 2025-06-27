@@ -17,9 +17,10 @@ namespace palgineer.controllers2
     {
         private readonly EngineerService _engineerService;
         private readonly FileServices _fileServices;
-        public CRUD(EngineerService engineerService, FileServices fileServices) { 
+        private readonly CloudinaryService _cloudinaryService;
+        public CRUD(EngineerService engineerService, FileServices fileServices,CloudinaryService cloudinaryService) { 
         
-            
+            _cloudinaryService = cloudinaryService;
             _engineerService = engineerService;
             _fileServices= fileServices;
         }
@@ -45,49 +46,57 @@ namespace palgineer.controllers2
         [Authorize]
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
-        public async Task<ActionResult> UpdateEngineer(string id,[FromForm] UpdateEngineerDTO updatedEngineer)
+        public async Task<ActionResult> UpdateEngineer(
+    string id,
+    [FromForm] UpdateEngineerDTO dto)
         {
-
-
-
             var callerId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             if (callerId != id)
-            {
                 return BadRequest(new
                 {
                     message = "Mismatched IDs",
                     tokenSub = callerId,
                     routeId = id
                 });
-            }
 
-            // 2) perform the update
             var existing = await _engineerService.GetByIdAsync(id);
             if (existing == null)
                 return NotFound();
 
-            existing.name = updatedEngineer.name ??existing.name;
-            existing.email = updatedEngineer.email?? existing.email;
-            existing.status= updatedEngineer.status ?? existing.status;
-            existing.experience= updatedEngineer.experience ?? existing.experience;
-            existing.summary = updatedEngineer.summary ?? existing.summary ;
-            existing.skills = updatedEngineer.skills ?? existing.skills;
-            existing.role=updatedEngineer.role??existing.role;
-            existing.links = updatedEngineer.links ?? existing.links;
-            if(updatedEngineer.avatar?.Length>0)
-            existing.avatar= await _fileServices.saveFileAsync( id,updatedEngineer.avatar);
-            if(updatedEngineer.resume?.Length>0)
-            existing.resume = await _fileServices.saveFileAsync(id,updatedEngineer.resume);
+            // update scalar fields if provided
+            existing.name = dto.name ?? existing.name;
+            existing.email = dto.email ?? existing.email;
+            existing.status = dto.status ?? existing.status;
+            existing.experience = dto.experience ?? existing.experience;
+            existing.summary = dto.summary ?? existing.summary;
+            existing.skills = dto.skills ?? existing.skills;
+            existing.role = dto.role ?? existing.role;
+            existing.links = dto.links ?? existing.links;
+
+            // if a new avatar file arrived, upload to Cloudinary under palgineer/{id}/avatars
+            if (dto.avatar?.Length > 0)
+            {
+                existing.avatar =
+                    await _cloudinaryService
+                        .UploadImageAsync(dto.avatar, id);
+            }
+
+            // if a new resume file arrived, upload to Cloudinary under palgineer/{id}/documents
+            if (dto.resume?.Length > 0)
+            {
+                existing.resume =
+                    await _cloudinaryService
+                        .UploadDocumentAsync(dto.resume, id);
+            }
 
             await _engineerService.UpdateEngineerAsync(existing, id);
             var updated = await _engineerService.GetByIdAsync(id);
+
             return Ok(new
             {
-                message="Engineer updated successfully",
-                updated,
-            }
-                
-                );
+                message = "Engineer updated successfully",
+                updated
+            });
         }
 
 

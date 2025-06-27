@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
+using CloudinaryDotNet;
 
 
 namespace palgineer.DI
@@ -19,20 +20,41 @@ namespace palgineer.DI
             services.AddScoped<FileServices> ();
             services.Configure<MongoDBSettings>(
                 configuration.GetSection("MongoDBSettings"));
+            services.AddSingleton<IMongoClient>(sp =>
+            {
+                var opts = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+                return new MongoClient(opts.ConnectionString);
+            });
+
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
             services.AddScoped<EngineerService> ();
 
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            var allowedOrigins = new[] { "http://localhost:5174","http://localhost:5173" };
-            services.AddCors(o => o.AddPolicy("DefaultCorsPolicy", p =>
+            var dev = configuration["AllowedOrigins:Dev"];
+            var staging = configuration["AllowedOrigins:Staging"];
+            var prod = configuration["AllowedOrigins:Production"];
+
+            // build the list, include localhost unconditionally, then filter out blanks
+            var allowedOrigins = new[]
             {
-                p.WithOrigins(allowedOrigins)
-                 .AllowAnyHeader()
-                 .AllowAnyMethod()
-                 .AllowCredentials();
-            }));
+    "http://localhost:5173",
+    dev,
+    staging,
+    prod
+}
+            .Where(o => !string.IsNullOrWhiteSpace(o))
+            .ToArray();
+
+            services.AddCors(o =>
+                o.AddPolicy("DefaultCorsPolicy", p =>
+                    p.WithOrigins(allowedOrigins)
+                     .AllowAnyHeader()
+                     .AllowAnyMethod()
+                     .AllowCredentials()
+                )
+            );
 
 
             services.AddAuthentication(options =>
@@ -55,7 +77,22 @@ namespace palgineer.DI
                     ClockSkew = TimeSpan.Zero
                 };
             });
-            
+
+
+            services.Configure<CloudinaryConfig>(
+  configuration.GetSection("Cloudinary")
+);
+
+            // register the Cloudinary client
+            services.AddSingleton(sp => {
+                var opts = sp.GetRequiredService<IOptions<CloudinaryConfig>>().Value;
+                var account = new Account(opts.CloudName, opts.ApiKey, opts.ApiSecret);
+                return new Cloudinary(account) { Api = { Secure = true } };
+            });
+
+            // register your upload service
+            services.AddScoped<CloudinaryService>();
+
 
         }
 

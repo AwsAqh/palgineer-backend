@@ -51,4 +51,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    // only in production/Render
+    builder.WebHost.UseUrls($"http://*:{port}");
+}
+
+
+
 app.Run();

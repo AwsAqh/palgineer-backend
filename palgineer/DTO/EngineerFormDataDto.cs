@@ -14,7 +14,7 @@
         public string? role { get; set; }
         public string? summary { get; set; }
 
-        public string[]? skills { get; set; }
+        public List<string> skills { get; set; } = new List<string>();
         public Dictionary<string,string>? links { get; set; }
 
         public IFormFile? avatar { get; set; }
