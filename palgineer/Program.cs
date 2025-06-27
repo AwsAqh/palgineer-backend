@@ -57,7 +57,10 @@ if (!string.IsNullOrEmpty(port))
     // only in production/Render
     builder.WebHost.UseUrls($"http://*:{port}");
 }
-
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 
 app.Run();

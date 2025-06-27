@@ -25,4 +25,5 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 ENV ASPNETCORE_URLS=http://*:${PORT}
+
 ENTRYPOINT ["dotnet", "palgineer.dll"]
