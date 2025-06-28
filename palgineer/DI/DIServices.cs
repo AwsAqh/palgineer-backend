@@ -36,25 +36,16 @@ namespace palgineer.DI
             var staging = configuration["AllowedOrigins:Staging"];
             var prod = configuration["AllowedOrigins:Production"];
 
-            // build the list, include localhost unconditionally, then filter out blanks
-            var allowedOrigins = new[]
-            {
-    "https://palgineer-1u9p1s7sj-awsaqhs-projects.vercel.app",
-    dev,
-    staging,
-    prod
-}
-            .Where(o => !string.IsNullOrWhiteSpace(o))
-            .ToArray();
-
             services.AddCors(o =>
-                o.AddPolicy("DefaultCorsPolicy", p =>
-                    p.WithOrigins(allowedOrigins)
-                     .AllowAnyHeader()
-                     .AllowAnyMethod()
-                     .AllowCredentials()
-                )
-            );
+     o.AddPolicy("DefaultCorsPolicy", p =>
+         p
+          // accept every origin, whatever it is:
+          .SetIsOriginAllowed(_ => true)
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials()
+     )
+ );
 
 
             services.AddAuthentication(options =>
