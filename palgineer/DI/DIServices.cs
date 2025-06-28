@@ -39,7 +39,7 @@ namespace palgineer.DI
             // build the list, include localhost unconditionally, then filter out blanks
             var allowedOrigins = new[]
             {
-    "https://palgineer-1u9p1s7sj-awsaqhs-projects.vercel.app/",
+    "https://palgineer-1u9p1s7sj-awsaqhs-projects.vercel.app",
     dev,
     staging,
     prod
