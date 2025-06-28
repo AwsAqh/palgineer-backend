@@ -25,6 +25,9 @@ namespace palgineer.controllers2
             _fileServices= fileServices;
         }
 
+        [HttpGet("health")]
+        public IActionResult CheckHealth() { return Ok(); }
+
         [HttpGet]
         public async Task<ActionResult<List<Engineer>>> GetAll()
         {
