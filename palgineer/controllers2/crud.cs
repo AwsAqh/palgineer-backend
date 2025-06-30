@@ -18,11 +18,11 @@ namespace palgineer.controllers2
         private readonly EngineerService _engineerService;
         private readonly FileServices _fileServices;
         private readonly CloudinaryService _cloudinaryService;
-        public CRUD(EngineerService engineerService, FileServices fileServices,CloudinaryService cloudinaryService) { 
-        
+        public CRUD(EngineerService engineerService, FileServices fileServices, CloudinaryService cloudinaryService) {
+
             _cloudinaryService = cloudinaryService;
             _engineerService = engineerService;
-            _fileServices= fileServices;
+            _fileServices = fileServices;
         }
 
         [HttpGet("health")]
@@ -35,6 +35,18 @@ namespace palgineer.controllers2
             return Ok(engineers);
         }
 
+
+        [HttpPost("check-email")]
+        public async Task<IActionResult> CheckEmailExist([FromForm]string email) { 
+        var exist=await _engineerService.GetByEmail(email);
+            if (exist != null) {
+
+                return BadRequest(new {  message="Email already exists!" });
+
+            }
+            return Ok();
+
+        } 
 
         [HttpGet("{id}")]
        
