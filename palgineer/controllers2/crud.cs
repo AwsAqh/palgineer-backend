@@ -37,7 +37,7 @@ namespace palgineer.controllers2
 
 
         [HttpPost("check-email")]
-        public async Task<IActionResult> CheckEmailExist([FromForm]string email) { 
+        public async Task<IActionResult> CheckEmailExist([FromBody]string email) { 
         var exist=await _engineerService.GetByEmail(email);
             if (exist != null) {
 
